@@ -1,0 +1,25 @@
+services:
+  slint-showcase:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: slint-showcase-web
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - HOST=0.0.0.0
+    ports:
+      # Maps external host port (default: 3050) to container port 3000.
+      # Port 3050 avoids conflicting with twas-frontend (3000), interviewapp (3080/3081),
+      # taskbridge (3010/3011), sen-frontend (3095), and traveldesk247 (3102/3104).
+      # Set HOST_PORT in .env to override (e.g. HOST_PORT=127.0.0.1:3050 for local reverse proxying).
+      - "${HOST_PORT:-3050}:3000"
+    networks:
+      - slint-network
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  slint-network:
+    driver: bridge
